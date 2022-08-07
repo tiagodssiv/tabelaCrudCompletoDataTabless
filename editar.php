@@ -1,6 +1,6 @@
 <?php
 require_once('conexao.php');
-
+// ESSE ARQUIVO editar.php  TEM  TODOS OS CÓDIGOS DO CRUD .O AJAX TRAZ E BUSCA DADOS  DESTE DOCUMENTO PHP.OS  SCRIPTS DO AJAX REFERENTES A CADA  FORMA DO CRUD ESTÃO NO ARQUIVO  EXTERNO script.js
 //preenche os campo modal editar
 if(!empty($_POST['codigo'])){
 	
