@@ -1,0 +1,212 @@
+TABELA COM RECURSOS DE PAGINAÇÃO,BUSCA E ORDENAÇÃO TOTALME AUTOMÁTICOS SENDO NECESSÁRIOS ALGUMAS LINHAS DE CÓDIGOS
+
+
+O plugin Data Tables permite que os dados vindos do banco de dados sejam totalmente manipulados na tebela ,
+como paginação, ordenação e pesquisa , totalmente automatizados,sendo necessário apenas um arquivo em php , que pega no banco de dados
+os registros e retorna em json para que a tabela seja preenchida .Após o preenchimento da tabela , as outras funcionalidades
+são totalmente automatizadas.
+
+LINK da documentação 
+https://datatables.net/examples/i18n/options.html
+
+
+1) Para utilizar o plugin basta utilizar um documento html e importar os link css e jquery e o javascript da data tables.
+
+e implementar detro de uma tag <script> o código  javascript da data tables.Veja exemplo
+
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+		<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+		<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" language="javascript">
+		$(document).ready(function() {
+			$('#listar-usuario').DataTable({
+    language: {
+		
+			//traduzir para portugues diretamentepelo código.Não necessita de internet se os plugins estao local
+		
+           lengthMenu: 'Mostrando _MENU_ Registros por página',
+            zeroRecords: 'Nada encontrado - Desculpe',
+            info: 'Mostrando página _PAGE_ de  _PAGES_',
+            infoEmpty: 'Nenhum regisro disponível',
+			previous: 'Anterior',
+			  paginate: {
+        next: 'Próximo',
+        previous: 'Anterior',
+        first: 'Primeiro',
+        last: 'Último',
+    },search: 'Pesquisar',
+			  
+			  
+            infoFiltered: '(Filtrado de  _MAX_ Total de registros)'
+			
+
+
+			//traduzir para portugues diretamente por url
+
+			 // "url": "//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json"
+        },
+
+
+			
+				"processing": true,
+				"serverSide": true,
+				"ajax": {
+					"url": "proc_pesq_user.php",
+					"type": "POST"
+				}	
+			});
+		} );
+		</script>
+
+
+Documento html completo:
+
+<html lang="pt-br">
+	<head>
+		<meta charset="utf-8">
+		<title>Celke</title>
+		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+		<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+		<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" language="javascript">
+		$(document).ready(function() {
+			$('#listar-usuario').DataTable({
+    language: {
+		
+			//traduzir para portugues diretamentepelo código.Não necessita de internet se os plugins estao local
+		
+           lengthMenu: 'Mostrando _MENU_ Registros por página',
+            zeroRecords: 'Nada encontrado - Desculpe',
+            info: 'Mostrando página _PAGE_ de  _PAGES_',
+            infoEmpty: 'Nenhum regisro disponível',
+			previous: 'Anterior',
+			  paginate: {
+        next: 'Próximo',
+        previous: 'Anterior',
+        first: 'Primeiro',
+        last: 'Último',
+    },search: 'Pesquisar',
+	  infoFiltered: '(Filtrado de  _MAX_ Total de registros)'
+			
+			//traduzir para portugues diretamente por url
+
+			 // "url": "//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json"
+        },
+"processing": true,
+				"serverSide": true,
+				"ajax": {
+					"url": "proc_pesq_user.php",
+					"type": "POST"
+				}	
+			});
+		} );
+		</script>
+	</head>
+	<body>
+		<h1>Listar usuários</h1>
+		<table id="listar-usuario" class="display" style="width:100%">
+			<thead>
+				<tr>
+					<th>Nome</th>
+					<th>Salario</th>
+					<th>Idade</th>
+				</tr>
+			</thead>
+		</table>		
+	</body>
+</html>
+
+2) para preencher a data tables com dados do banco , basta criar um documento php ,que foi informado no ajax 
+"ajax": {
+					"url": "proc_pesq_user.php",
+					"type": "POST"
+				}	
+
+Este documento deve ter as pesquisas no banco de dados , como a quantidade de registros , a ordenação , o select da busca 
+
+Veja como fica todo o escript , que retornará uma lista com todos os dados necessários para preencher a tabela.
+
+NOTA: O NÚMERO DE COLUNA NA TABELA DEVE SER CORRESPONDENTE COM A CONSULTA NO BANCO  EX:
+
+
+<table id="listar-usuario" class="display" style="width:100%">
+			<thead>
+				<tr>
+					<th>Nome</th>
+					<th>Salario</th>
+					<th>Idade</th>
+                                        <th>Matrícula</th>
+				</tr>
+			</thead>
+		</table>
+
+
+
+SELECT nome, salario, idade,matricula FROM usuarios
+
+
+Faça aa dapção coerente para que a tabela seja preenchida com os dados do banco de sua preferência.
+
+Veja como deve ser feito o documento php para retornar os dados para a data tables
+
+
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "celke";
+
+$conn = mysqli_connect($servername, $username, $password, $dbname);
+
+//Receber a requisão da pesquisa 
+$requestData= $_REQUEST;
+
+
+//Indice da coluna na tabela visualizar resultado => nome da coluna no banco de dados
+$columns = array( 
+	0 =>'nome', 
+	1 => 'salario',
+	2=> 'idade'
+);
+
+//Obtendo registros de número total sem qualquer pesquisa
+$result_user = "SELECT nome, salario, idade FROM usuarios";
+$resultado_user =mysqli_query($conn, $result_user);
+$qnt_linhas = mysqli_num_rows($resultado_user);
+
+//Obter os dados a serem apresentados
+$result_usuarios = "SELECT nome, salario, idade FROM usuarios WHERE 1=1";
+if( !empty($requestData['search']['value']) ) {   // se houver um parâmetro de pesquisa, $requestData['search']['value'] contém o parâmetro de pesquisa
+	$result_usuarios.=" AND ( nome LIKE '".$requestData['search']['value']."%' ";    
+	$result_usuarios.=" OR salario LIKE '".$requestData['search']['value']."%' ";
+	$result_usuarios.=" OR idade LIKE '".$requestData['search']['value']."%' )";
+}
+
+$resultado_usuarios=mysqli_query($conn, $result_usuarios);
+$totalFiltered = mysqli_num_rows($resultado_usuarios);
+//Ordenar o resultado
+$result_usuarios.=" ORDER BY ". $columns[$requestData['order'][0]['column']]."   ".$requestData['order'][0]['dir']."  LIMIT ".$requestData['start']." ,".$requestData['length']."   ";
+$resultado_usuarios=mysqli_query($conn, $result_usuarios);
+
+// Ler e criar o array de dados
+$dados = array();
+while( $row_usuarios =mysqli_fetch_array($resultado_usuarios) ) {  
+	$dado = array(); 
+	$dado[] = $row_usuarios["nome"];
+	$dado[] = $row_usuarios["salario"];
+	$dado[] = $row_usuarios["idade"];	
+	$dados[] = $dado;
+}
+
+
+//Cria o array de informações a serem retornadas para o Javascript
+$json_data = array(
+	"draw" => intval( $requestData['draw'] ),//para cada requisição é enviado um número como parâmetro
+	"recordsTotal" => intval( $qnt_linhas ),  //Quantidade de registros que há no banco de dados
+	"recordsFiltered" => intval( $totalFiltered ), //Total de registros quando houver pesquisa
+	"data" => $dados   //Array de dados completo dos dados retornados da tabela 
+);
+
+echo json_encode($json_data);  //enviar dados como formato json
+ 
+
