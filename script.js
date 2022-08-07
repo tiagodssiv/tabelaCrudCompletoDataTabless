@@ -1,4 +1,10 @@
-	 function editarUser(id){
+	
+	function editarUser(id){
+		 
+	/* preenche o modal assim que clicar no botão editar.Esta função envia
+	o código ao php e retorna os campos do form que compõe o modal já preenchidos
+	
+	*/	 
  var cod =id;
 
  $.ajax({
@@ -19,6 +25,9 @@
 	 
 	 
 	  function visualizarUser(id){
+		  
+		  	 
+	/* envia o id para o php visualizar.php e recebe uma div com os dados do usuário	*/
  var cod =id;
  
  $.ajax({
@@ -35,7 +44,7 @@
 	 }
 	 
 	 function editar(){
-	
+		/* envia o id para o php editar.php e recebe uma div com os dados do usuário	*/
 		 
  var cod = $("#id").val();//document.getElementById("id").value();
 
@@ -73,7 +82,7 @@
 	 }
 	 
 			function excluir(id) {
-
+	/* envia o id para o php editar.php e recebe uma div com os dados do usuário	*/
 if(confirm('Deseja realmente excluir este registro?')){
 	
 	
@@ -108,11 +117,13 @@ if(confirm('Deseja realmente excluir este registro?')){
 
 
 function cadastrar() {
-
+	/* envia o id para o php editar.php e recebe uma div com os dados do usuário	*/
  var nome = $("#nome").val();
  var idade =  $("#idade").val();//var nome= document.getElementById("idade").value();
  var salario = $("#dinheiroComZero").val();// var nome=  document.getElementById("dinheiroComZero").value();
  
+ 
+ //valida os campos .Após validação o cadastro ocorre
 if(salario==""  ){
 	$("#aler").html("<div style='margin:10px;'class='alert alert-danger alert-dismissible fade show' role='alert'><strong>Atenção!</strong> Capo Salário não pode estar em branco !</div>");
 	

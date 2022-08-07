@@ -1,5 +1,7 @@
 <?php
 require_once('conexao.php');
+
+//recebe o id do ajax e pega os dados do usuário com o id correpondente e retorna para o ajax uma div com os dados 
 if(!empty($_POST['dados'])){
 	
 	$id=$_POST['dados'];

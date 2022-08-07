@@ -62,7 +62,7 @@ if ($stmt->execute()) {
           
 }
 }
-
+//exclui os dados ao clicar no botão excluir.O ajax envia o id para este aqrquivo e recebe o aviso a exclusão
 	if(!empty($_POST['excluir'])){
 		
 		$id=$_POST['excluir'];
